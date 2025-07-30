@@ -1,0 +1,100 @@
+global:
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alerts@sleek-monitor.com'
+  pagerduty_url: 'https://events.pagerduty.com/v2/enqueue'
+
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'web.hook'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'pagerduty-critical'
+      group_wait: 5s
+      repeat_interval: 5m
+    - match:
+        service: sla
+      receiver: 'pagerduty-sla'
+      group_wait: 5s
+      repeat_interval: 2m
+    - match:
+        service: disaster-recovery
+      receiver: 'pagerduty-disaster'
+      group_wait: 0s
+      repeat_interval: 1m
+    - match:
+        severity: warning
+      receiver: 'email-warnings'
+      group_wait: 30s
+      repeat_interval: 1h
+
+receivers:
+  - name: 'web.hook'
+    webhook_configs:
+      - url: 'http://127.0.0.1:5001/'
+
+  - name: 'pagerduty-critical'
+    pagerduty_configs:
+      - routing_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY_CRITICAL'
+        description: 'Critical Alert: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        details:
+          firing: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+          region: '{{ range .Alerts }}{{ .Labels.region }}{{ end }}'
+          service: '{{ range .Alerts }}{{ .Labels.service }}{{ end }}'
+
+  - name: 'pagerduty-sla'
+    pagerduty_configs:
+      - routing_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY_SLA'
+        description: 'SLA Violation: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        severity: 'critical'
+        details:
+          firing: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+          region: '{{ range .Alerts }}{{ .Labels.region }}{{ end }}'
+          sla_target: '99.99%'
+
+  - name: 'pagerduty-disaster'
+    pagerduty_configs:
+      - routing_key: 'YOUR_PAGERDUTY_INTEGRATION_KEY_DISASTER'
+        description: 'DISASTER RECOVERY: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        severity: 'critical'
+        details:
+          firing: '{{ range .Alerts }}{{ .Annotations.description }}{{ end }}'
+          action_required: 'Immediate disaster recovery procedures required'
+
+  - name: 'email-warnings'
+    email_configs:
+      - to: 'ops-team@sleek-monitor.com'
+        subject: 'Sleek Monitor Warning: {{ range .Alerts }}{{ .Annotations.summary }}{{ end }}'
+        body: |
+          {{ range .Alerts }}
+          Alert: {{ .Annotations.summary }}
+          Description: {{ .Annotations.description }}
+          Region: {{ .Labels.region }}
+          Service: {{ .Labels.service }}
+          {{ end }}
+
+  - name: 'slack-notifications'
+    slack_configs:
+      - api_url: 'YOUR_SLACK_WEBHOOK_URL'
+        channel: '#sleek-alerts'
+        title: 'Sleek Monitor Alert'
+        text: |
+          {{ range .Alerts }}
+          *Alert:* {{ .Annotations.summary }}
+          *Description:* {{ .Annotations.description }}
+          *Region:* {{ .Labels.region }}
+          *Severity:* {{ .Labels.severity }}
+          {{ end }}
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']

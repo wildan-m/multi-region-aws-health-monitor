@@ -1,0 +1,121 @@
+groups:
+  - name: sleek.infrastructure
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Instance {{ $labels.instance }} is down"
+          description: "{{ $labels.instance }} of job {{ $labels.job }} has been down for more than 1 minute."
+
+      - alert: HighCPUUsage
+        expr: 100 - (avg by(instance) (irate(node_cpu_seconds_total{mode="idle"}[5m])) * 100) > 80
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High CPU usage on {{ $labels.instance }}"
+          description: "CPU usage is above 80% on {{ $labels.instance }} for more than 5 minutes."
+
+      - alert: HighMemoryUsage
+        expr: (node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100 > 85
+        for: 5m
+        labels:
+          severity: warning
+          service: infrastructure
+        annotations:
+          summary: "High memory usage on {{ $labels.instance }}"
+          description: "Memory usage is above 85% on {{ $labels.instance }} for more than 5 minutes."
+
+      - alert: DiskSpaceLow
+        expr: (node_filesystem_avail_bytes{fstype!="tmpfs"} / node_filesystem_size_bytes{fstype!="tmpfs"}) * 100 < 10
+        for: 5m
+        labels:
+          severity: critical
+          service: infrastructure
+        annotations:
+          summary: "Low disk space on {{ $labels.instance }}"
+          description: "Disk space is below 10% on {{ $labels.instance }} {{ $labels.mountpoint }}."
+
+  - name: sleek.application
+    rules:
+      - alert: ApplicationDown
+        expr: probe_success{job=~"blackbox-http-.*"} == 0
+        for: 2m
+        labels:
+          severity: critical
+          service: application
+        annotations:
+          summary: "Application is down in {{ $labels.region }}"
+          description: "Application health check is failing in {{ $labels.region }} for more than 2 minutes."
+
+      - alert: HighResponseTime
+        expr: probe_duration_seconds{job=~"blackbox-http-.*"} > 2
+        for: 3m
+        labels:
+          severity: warning
+          service: application
+        annotations:
+          summary: "High response time in {{ $labels.region }}"
+          description: "Application response time is above 2 seconds in {{ $labels.region }} for more than 3 minutes."
+
+      - alert: ApplicationErrorRate
+        expr: increase(sleek_app_requests_total{status=~"5.."}[5m]) / increase(sleek_app_requests_total[5m]) * 100 > 5
+        for: 5m
+        labels:
+          severity: warning
+          service: application
+        annotations:
+          summary: "High error rate in {{ $labels.region }}"
+          description: "Application error rate is above 5% in {{ $labels.region }} for more than 5 minutes."
+
+  - name: sleek.sla
+    rules:
+      - alert: SLAViolation
+        expr: (
+          sum(rate(probe_success{job=~"blackbox-http-.*"}[5m])) by (region) /
+          sum(rate(probe_success{job=~"blackbox-http-.*"}[5m]) or rate(probe_success{job=~"blackbox-http-.*"}[5m]) * 0 + 1) by (region)
+        ) * 100 < 99.99
+        for: 1m
+        labels:
+          severity: critical
+          service: sla
+        annotations:
+          summary: "SLA violation in {{ $labels.region }}"
+          description: "Availability in {{ $labels.region }} has dropped below 99.99% SLA target."
+
+      - alert: MultiRegionOutage
+        expr: count(up{job=~"node-exporter-.*"} == 0) by () >= 2
+        for: 2m
+        labels:
+          severity: critical
+          service: disaster-recovery
+        annotations:
+          summary: "Multi-region outage detected"
+          description: "{{ $value }} regions are experiencing outages. Disaster recovery procedures may be needed."
+
+  - name: sleek.financial-services
+    rules:
+      - alert: ComplianceLatency
+        expr: probe_duration_seconds{job=~"blackbox-http-.*"} > 0.5
+        for: 1m
+        labels:
+          severity: warning
+          service: compliance
+        annotations:
+          summary: "Transaction latency above compliance threshold"
+          description: "Response time in {{ $labels.region }} exceeds 500ms financial services compliance threshold."
+
+      - alert: DataProcessingDelay
+        expr: time() - sleek_last_data_sync_timestamp > 300
+        for: 2m
+        labels:
+          severity: critical
+          service: data-integrity
+        annotations:
+          summary: "Data synchronization delay"
+          description: "Data sync has been delayed for more than 5 minutes, potentially affecting financial reporting."

@@ -1,0 +1,35 @@
+apiVersion: 1
+
+datasources:
+  - name: Prometheus
+    type: prometheus
+    access: proxy
+    url: http://prometheus:9090
+    isDefault: true
+    editable: true
+    jsonData:
+      httpMethod: GET
+      prometheusType: Prometheus
+      prometheusVersion: 2.40.0
+      cacheLevel: High
+      manageAlerts: true
+      alertmanagerUid: alertmanager
+
+  - name: CloudWatch
+    type: cloudwatch
+    access: proxy
+    jsonData:
+      authType: credentials
+      defaultRegion: ap-southeast-1
+      customMetricsNamespaces: "Sleek/Application,AWS/EC2,AWS/RDS,AWS/ApplicationELB"
+    secureJsonData:
+      accessKey: ${CLOUDWATCH_ACCESS_KEY}
+      secretKey: ${CLOUDWATCH_SECRET_KEY}
+
+  - name: AlertManager
+    type: alertmanager
+    uid: alertmanager
+    access: proxy
+    url: http://alertmanager:9093
+    jsonData:
+      implementation: prometheus
