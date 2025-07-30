@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "Name of the project"
   type        = string
-  default     = "sleek-health-monitor"
+  default     = "sleek-hm"
 }
 
 variable "environment" {

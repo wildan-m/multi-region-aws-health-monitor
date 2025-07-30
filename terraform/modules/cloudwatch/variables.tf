@@ -19,6 +19,26 @@ variable "sns_topic_arn" {
   default     = null
 }
 
+variable "load_balancer_arn_suffix" {
+  description = "ALB ARN suffix for CloudWatch metrics"
+  type        = string
+}
+
+variable "target_group_arn_suffix" {
+  description = "Target group ARN suffix for CloudWatch metrics"
+  type        = string
+}
+
+variable "autoscaling_group_name" {
+  description = "Auto Scaling group name"
+  type        = string
+}
+
+variable "db_instance_id" {
+  description = "RDS instance identifier"
+  type        = string
+}
+
 variable "tags" {
   description = "Common tags for all resources"
   type        = map(string)

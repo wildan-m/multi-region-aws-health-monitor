@@ -12,7 +12,7 @@ resource "aws_cloudwatch_dashboard" "sleek_regional" {
 
         properties = {
           metrics = [
-            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", aws_lb.web.arn_suffix],
+            ["AWS/ApplicationELB", "RequestCount", "LoadBalancer", var.load_balancer_arn_suffix],
             [".", "TargetResponseTime", ".", "."],
             [".", "HTTPCode_Target_2XX_Count", ".", "."],
             [".", "HTTPCode_Target_4XX_Count", ".", "."],
@@ -34,7 +34,7 @@ resource "aws_cloudwatch_dashboard" "sleek_regional" {
 
         properties = {
           metrics = [
-            ["AWS/EC2", "CPUUtilization", "AutoScalingGroupName", aws_autoscaling_group.web.name],
+            ["AWS/EC2", "CPUUtilization", "AutoScalingGroupName", var.autoscaling_group_name],
             [".", "NetworkIn", ".", "."],
             [".", "NetworkOut", ".", "."]
           ]
@@ -54,7 +54,7 @@ resource "aws_cloudwatch_dashboard" "sleek_regional" {
 
         properties = {
           metrics = [
-            ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", aws_db_instance.main.id],
+            ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.db_instance_id],
             [".", "DatabaseConnections", ".", "."],
             [".", "ReadLatency", ".", "."],
             [".", "WriteLatency", ".", "."]
