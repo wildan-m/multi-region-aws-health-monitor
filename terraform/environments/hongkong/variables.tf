@@ -13,7 +13,7 @@ variable "environment" {
 variable "region" {
   description = "AWS region"
   type        = string
-  default     = "ap-east-1"
+  default     = "ap-northeast-1"
 }
 
 variable "vpc_cidr" {
@@ -56,7 +56,7 @@ variable "tags" {
   description = "Additional tags for resources"
   type        = map(string)
   default = {
-    Country = "Hong Kong"
-    Office  = "Hong Kong Branch"
+    Country = "Japan"
+    Office  = "Tokyo Branch (HK Operations)"
   }
 }

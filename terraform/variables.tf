@@ -57,7 +57,7 @@ variable "tags" {
   description = "Common tags for all resources"
   type        = map(string)
   default = {
-    Project     = "sleek-health-monitor"
+    Project     = "sleek-hm"
     ManagedBy   = "terraform"
   }
 }

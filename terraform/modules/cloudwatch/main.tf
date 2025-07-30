@@ -101,7 +101,7 @@ resource "aws_cloudwatch_metric_alarm" "high_response_time" {
   alarm_actions       = var.sns_topic_arn != null ? [var.sns_topic_arn] : []
 
   dimensions = {
-    LoadBalancer = aws_lb.web.arn_suffix
+    LoadBalancer = var.load_balancer_arn_suffix
   }
 
   tags = merge(var.tags, {
@@ -128,8 +128,8 @@ resource "aws_cloudwatch_metric_alarm" "sla_availability" {
       stat        = "Average"
       
       dimensions = {
-        LoadBalancer = aws_lb.web.arn_suffix
-        TargetGroup  = aws_lb_target_group.web.arn_suffix
+        LoadBalancer = var.load_balancer_arn_suffix
+        TargetGroup  = var.target_group_arn_suffix
       }
     }
   }
@@ -179,7 +179,7 @@ resource "aws_cloudwatch_anomaly_detector" "response_time_anomaly" {
           metric_name = "TargetResponseTime"
           namespace   = "AWS/ApplicationELB"
           dimensions = {
-            LoadBalancer = aws_lb.web.arn_suffix
+            LoadBalancer = var.load_balancer_arn_suffix
           }
         }
         period = 300
@@ -211,7 +211,7 @@ resource "aws_cloudwatch_metric_alarm" "response_time_anomaly_alarm" {
               metric_name = "TargetResponseTime"
               namespace   = "AWS/ApplicationELB"
               dimensions = {
-                LoadBalancer = aws_lb.web.arn_suffix
+                LoadBalancer = var.load_balancer_arn_suffix
               }
             }
             period = 300

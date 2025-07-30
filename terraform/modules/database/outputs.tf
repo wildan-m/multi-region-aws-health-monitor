@@ -28,8 +28,8 @@ output "db_security_group_id" {
   value       = aws_security_group.rds.id
 }
 
-output "db_password_secret_arn" {
-  description = "ARN of the secret containing database password"
-  value       = aws_secretsmanager_secret.db_password.arn
+output "db_password" {
+  description = "Database password (sensitive)"
+  value       = random_password.db_password.result
   sensitive   = true
 }

@@ -36,26 +36,8 @@ resource "random_password" "db_password" {
   special = true
 }
 
-resource "aws_secretsmanager_secret" "db_password" {
-  name        = "${var.project_name}-db-password-${var.environment}-${random_id.secret_suffix.hex}"
-  description = "Database password for ${var.project_name} ${var.environment}"
-  
-  tags = merge(var.tags, {
-    Name = "${var.project_name}-db-password-${var.environment}"
-  })
-}
-
-resource "random_id" "secret_suffix" {
-  byte_length = 4
-}
-
-resource "aws_secretsmanager_secret_version" "db_password" {
-  secret_id     = aws_secretsmanager_secret.db_password.id
-  secret_string = jsonencode({
-    username = "sleekadmin"
-    password = random_password.db_password.result
-  })
-}
+# Simplified password management - using random password directly
+# In production, consider using AWS Secrets Manager with proper IAM permissions
 
 resource "aws_db_instance" "main" {
   identifier = "${var.project_name}-db-${var.environment}"
@@ -83,8 +65,8 @@ resource "aws_db_instance" "main" {
   monitoring_interval = var.monitoring_enabled ? 60 : 0
   monitoring_role_arn = var.monitoring_enabled ? aws_iam_role.rds_enhanced_monitoring[0].arn : null
 
-  performance_insights_enabled = var.monitoring_enabled
-  performance_insights_retention_period = var.monitoring_enabled ? 7 : null
+  performance_insights_enabled = false
+  performance_insights_retention_period = null
 
   enabled_cloudwatch_logs_exports = ["audit", "error", "general", "slowquery"]
 
