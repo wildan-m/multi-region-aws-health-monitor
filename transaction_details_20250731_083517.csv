@@ -1,0 +1,13 @@
+timestamp,region,transaction_type,status_code,response_time_ms,success,error
+2025-07-31T01:35:12.516782+00:00,singapore,health_check,0,5030.89,False,"Cannot connect to host singapore-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.516948+00:00,singapore,user_login,0,5030.14,False,"Cannot connect to host singapore-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517063+00:00,singapore,financial_query,0,5030.14,False,"Cannot connect to host singapore-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517144+00:00,hongkong,health_check,0,5030.47,False,"Cannot connect to host hongkong-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517208+00:00,hongkong,user_login,0,5029.77,False,"Cannot connect to host hongkong-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517276+00:00,hongkong,financial_query,0,5029.40,False,"Cannot connect to host hongkong-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517338+00:00,australia,health_check,0,5030.58,False,"Cannot connect to host australia-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517398+00:00,australia,user_login,0,5030.42,False,"Cannot connect to host australia-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517459+00:00,australia,financial_query,0,5030.31,False,"Cannot connect to host australia-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517516+00:00,uk,health_check,0,5030.21,False,"Cannot connect to host uk-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517568+00:00,uk,user_login,0,5029.72,False,"Cannot connect to host uk-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"
+2025-07-31T01:35:12.517709+00:00,uk,financial_query,0,5029.66,False,"Cannot connect to host uk-lb.sleek-monitor.local:443 ssl:default [nodename nor servname provided, or not known]"

@@ -76,10 +76,7 @@ groups:
   - name: sleek.sla
     rules:
       - alert: SLAViolation
-        expr: (
-          sum(rate(probe_success{job=~"blackbox-http-.*"}[5m])) by (region) /
-          sum(rate(probe_success{job=~"blackbox-http-.*"}[5m]) or rate(probe_success{job=~"blackbox-http-.*"}[5m]) * 0 + 1) by (region)
-        ) * 100 < 99.99
+        expr: (sum(rate(probe_success{job=~"blackbox-http-.*"}[5m])) by (region) / sum(rate(probe_success{job=~"blackbox-http-.*"}[5m]) or rate(probe_success{job=~"blackbox-http-.*"}[5m]) * 0 + 1) by (region)) * 100 < 99.99
         for: 1m
         labels:
           severity: critical

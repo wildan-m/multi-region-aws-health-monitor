@@ -1,0 +1,72 @@
+{
+  "timestamp": "2025-07-31T01:35:17.548048+00:00",
+  "total_transactions": 12,
+  "successful_transactions": 0,
+  "failed_transactions": 12,
+  "overall_success_rate": 0.0,
+  "regions": {
+    "uk": {
+      "total": 3,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5029.863278071086,
+      "sla_compliant": false
+    },
+    "australia": {
+      "total": 3,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5030.437310536702,
+      "sla_compliant": false
+    },
+    "singapore": {
+      "total": 3,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5030.39304415385,
+      "sla_compliant": false
+    },
+    "hongkong": {
+      "total": 3,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5029.8763910929365,
+      "sla_compliant": false
+    }
+  },
+  "transaction_types": {
+    "financial_query": {
+      "total": 4,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5029.876828193665
+    },
+    "user_login": {
+      "total": 4,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5030.012428760529
+    },
+    "health_check": {
+      "total": 4,
+      "successful": 0,
+      "success_rate": 0.0,
+      "avg_response_time": 5030.538260936737
+    }
+  },
+  "sla_compliance": {
+    "target_availability": 99.99,
+    "current_availability": 0.0,
+    "compliance_status": "NON_COMPLIANT",
+    "financial_services_latency": {
+      "target_ms": 500,
+      "violations": 4
+    }
+  },
+  "response_times": {
+    "min": 5029.396295547485,
+    "max": 5030.894041061401,
+    "avg": 5030.142505963643,
+    "median": 5030.177474021912
+  }
+}
