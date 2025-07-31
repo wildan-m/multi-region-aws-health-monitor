@@ -1,0 +1,57 @@
+global:
+  smtp_smarthost: 'localhost:587'
+  smtp_from: 'alerts@sleek-monitor.local'
+
+templates:
+  - '/etc/alertmanager/templates/*.tmpl'
+
+route:
+  group_by: ['alertname', 'cluster', 'service']
+  group_wait: 10s
+  group_interval: 10s
+  repeat_interval: 12h
+  receiver: 'console-webhook'
+  routes:
+    - match:
+        severity: critical
+      receiver: 'console-critical'
+      group_wait: 5s
+      repeat_interval: 5m
+    - match:
+        service: sla
+      receiver: 'console-sla'
+      group_wait: 5s
+      repeat_interval: 2m
+    - match:
+        severity: warning
+      receiver: 'console-warnings'
+      group_wait: 30s
+      repeat_interval: 1h
+
+receivers:
+  - name: 'console-webhook'
+    webhook_configs:
+      - url: 'http://host.docker.internal:8888/webhook'
+        send_resolved: true
+
+  - name: 'console-critical'
+    webhook_configs:
+      - url: 'http://host.docker.internal:8888/critical'
+        send_resolved: true
+
+  - name: 'console-sla'
+    webhook_configs:
+      - url: 'http://host.docker.internal:8888/sla'
+        send_resolved: true
+
+  - name: 'console-warnings'
+    webhook_configs:
+      - url: 'http://host.docker.internal:8888/warning'
+        send_resolved: true
+
+inhibit_rules:
+  - source_match:
+      severity: 'critical'
+    target_match:
+      severity: 'warning'
+    equal: ['alertname', 'instance']

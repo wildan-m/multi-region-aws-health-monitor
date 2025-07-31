@@ -52,7 +52,7 @@ services:
       - ./monitoring/alerting:/etc/alertmanager
       - alertmanager_data:/alertmanager
     command:
-      - '--config.file=/etc/alertmanager/alertmanager.yml'
+      - '--config.file=/etc/alertmanager/alertmanager-local.yml'
       - '--storage.path=/alertmanager'
       - '--web.external-url=http://localhost:9093'
     restart: unless-stopped

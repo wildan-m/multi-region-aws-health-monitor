@@ -4,8 +4,8 @@ global:
   external_labels:
     monitor: 'sleek-health-monitor'
 
-# rule_files:
-#   - "rules/*.yml"
+rule_files:
+  - "rules/*.yml"
 
 alerting:
   alertmanagers:
