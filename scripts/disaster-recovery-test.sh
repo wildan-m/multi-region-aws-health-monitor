@@ -139,11 +139,32 @@ parse_args() {
 # Convert duration to seconds for sleep
 duration_to_seconds() {
     local duration=$1
+    
+    # Handle malformed input like "0.5."
+    if [[ "$duration" =~ ^[0-9]*\.?[0-9]*\.?$ ]]; then
+        # Remove trailing dots and treat as minutes
+        duration=$(echo "$duration" | sed 's/\.$//g')
+        if [[ "$duration" =~ \. ]]; then
+            # Convert decimal minutes to seconds (e.g., 0.5 = 30 seconds)
+            echo "$duration * 60" | bc 2>/dev/null || echo "30"
+        else
+            echo "$((duration * 60))"  # Default to minutes
+        fi
+        return
+    fi
+    
     case $duration in
         *s) echo "${duration%s}" ;;
         *m) echo "$((${duration%m} * 60))" ;;
         *h) echo "$((${duration%h} * 3600))" ;;
-        *) echo "1800" ;; # Default 30 minutes
+        *) 
+            # Try to parse as number (assume seconds)
+            if [[ "$duration" =~ ^[0-9]+$ ]]; then
+                echo "$duration"
+            else
+                echo "60"  # Default to 1 minute
+            fi
+            ;;
     esac
 }
 
@@ -277,9 +298,26 @@ restore_instance_capacity() {
     
     # Wait for instances to be healthy
     log "Waiting for instances to become healthy..."
-    aws autoscaling wait group-in-service \
-        --region "$aws_region" \
-        --auto-scaling-group-names "$asg_name"
+    
+    # Wait up to 5 minutes for ASG to be in service
+    local wait_count=0
+    local max_wait=10  # 10 * 30s = 5 minutes
+    
+    while [[ $wait_count -lt $max_wait ]]; do
+        local instance_status=$(aws autoscaling describe-auto-scaling-groups \
+            --region "$aws_region" \
+            --auto-scaling-group-names "$asg_name" \
+            --query 'AutoScalingGroups[0].Instances[?LifecycleState==`InService`] | length(@)' \
+            --output text 2>/dev/null || echo "0")
+        
+        if [[ "$instance_status" -ge 2 ]]; then
+            break
+        fi
+        
+        log "Waiting for instances... ($((wait_count + 1))/$max_wait)"
+        sleep 30
+        ((wait_count++))
+    done
     
     success "Instances are now healthy"
 }
@@ -355,11 +393,16 @@ monitor_failover() {
         log "Test progress: ${elapsed}s elapsed, ${remaining}s remaining"
         
         # Check health of all regions
-        local healthy_regions=$(curl -s 'http://localhost:9090/api/v1/query?query=probe_success{job=~"blackbox-http-.*"}' | \
-            jq -r '.data.result[] | select(.value[1] == "1") | .metric.region' | \
-            sort -u | wc -l)
+        local prometheus_response=$(curl -s 'http://localhost:9090/api/v1/query?query=probe_success{job=~"blackbox-http-.*"}')
+        local healthy_regions=0
+        
+        if [[ -n "$prometheus_response" ]] && echo "$prometheus_response" | jq -e '.data.result' >/dev/null 2>&1; then
+            healthy_regions=$(echo "$prometheus_response" | \
+                jq -r '.data.result[]? | select(.value[1] == "1") | .metric.region' 2>/dev/null | \
+                sort -u | wc -l || echo "0")
+        fi
             
-        log "Healthy regions: $healthy_regions/4"
+        log "Healthy regions: ${healthy_regions:-0}/4"
         
         # Sleep for 30 seconds before next check
         sleep 30
