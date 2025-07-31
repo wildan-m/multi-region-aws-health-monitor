@@ -1,0 +1,27 @@
+{
+  "db_endpoint": {
+    "sensitive": true,
+    "type": "string",
+    "value": "sleek-hm-db-singapore.csebju8g8wqq.ap-southeast-1.rds.amazonaws.com:3306"
+  },
+  "environment": {
+    "sensitive": false,
+    "type": "string",
+    "value": "singapore"
+  },
+  "load_balancer_dns_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "sleek-hm-alb-sin-1105181195.ap-southeast-1.elb.amazonaws.com"
+  },
+  "region": {
+    "sensitive": false,
+    "type": "string",
+    "value": "ap-southeast-1"
+  },
+  "vpc_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-0464aa5c28ee1f5d7"
+  }
+}

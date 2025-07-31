@@ -22,7 +22,7 @@ provider "aws" {
 }
 
 locals {
-  availability_zones = ["${var.region}a", "${var.region}b"]
+  availability_zones = ["${var.region}a", "${var.region}c"]
 }
 
 module "vpc" {

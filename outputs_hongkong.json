@@ -1,0 +1,27 @@
+{
+  "db_endpoint": {
+    "sensitive": true,
+    "type": "string",
+    "value": "sleek-hm-db-hongkong.ct6a40scgz26.ap-northeast-1.rds.amazonaws.com:3306"
+  },
+  "environment": {
+    "sensitive": false,
+    "type": "string",
+    "value": "hongkong"
+  },
+  "load_balancer_dns_name": {
+    "sensitive": false,
+    "type": "string",
+    "value": "sleek-hm-alb-hon-1310035724.ap-northeast-1.elb.amazonaws.com"
+  },
+  "region": {
+    "sensitive": false,
+    "type": "string",
+    "value": "ap-northeast-1"
+  },
+  "vpc_id": {
+    "sensitive": false,
+    "type": "string",
+    "value": "vpc-0d91ba16ec4d889a9"
+  }
+}

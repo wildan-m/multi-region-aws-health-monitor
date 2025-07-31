@@ -16,6 +16,8 @@ The Sleek Multi-Region Infrastructure Monitoring Dashboard implements a comprehe
 
 Each region implements an identical infrastructure pattern for consistency and operational simplicity:
 
+![Regional Architecture](regional-architecture.png)
+
 ```mermaid
 graph TB
     subgraph "Region: Singapore/HK/AU/UK"
@@ -66,6 +68,8 @@ graph TB
 - **Enhanced Monitoring**: Detailed metrics collection
 
 ### Monitoring & Observability
+
+![Monitoring Architecture](monitoring-architecture.png)
 
 ```mermaid
 graph LR

@@ -57,6 +57,6 @@ variable "tags" {
   type        = map(string)
   default = {
     Country = "Japan"
-    Office  = "Tokyo Branch (HK Operations)"
+    Office  = "Tokyo Branch HK Operations"
   }
 }
