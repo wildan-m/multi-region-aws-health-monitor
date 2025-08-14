@@ -12,7 +12,7 @@
   "load_balancer_dns_name": {
     "sensitive": false,
     "type": "string",
-    "value": "sleek-hm-alb-hon-1310035724.ap-northeast-1.elb.amazonaws.com"
+    "value": "sleek-hm-alb-hon-308880888.ap-northeast-1.elb.amazonaws.com"
   },
   "region": {
     "sensitive": false,
@@ -22,6 +22,6 @@
   "vpc_id": {
     "sensitive": false,
     "type": "string",
-    "value": "vpc-0d91ba16ec4d889a9"
+    "value": "vpc-037a418f937e5a156"
   }
 }
