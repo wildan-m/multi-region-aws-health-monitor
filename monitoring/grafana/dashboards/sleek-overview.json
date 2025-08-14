@@ -244,14 +244,14 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "count by (environment) (up{job=~\"node-exporter-.*\"} == 1)",
+          "expr": "count by (region) (probe_success{job=~\"blackbox-http-.*\"} == 1)",
           "instant": false,
-          "legendFormat": "{{environment}}",
+          "legendFormat": "{{region}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Healthy Instances by Region",
+      "title": "Healthy Services by Region",
       "type": "piechart"
     },
     {
@@ -309,7 +309,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "none"
         },
         "overrides": []
       },
@@ -339,14 +339,14 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "100 - (avg by(environment) (irate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "expr": "up{job=~\"sleek-application-metrics\"}",
           "instant": false,
-          "legendFormat": "{{environment}}",
+          "legendFormat": "{{instance}}",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "CPU Usage by Region",
+      "title": "Application Status by Region",
       "type": "timeseries"
     },
     {
@@ -404,7 +404,7 @@
               }
             ]
           },
-          "unit": "percent"
+          "unit": "ms"
         },
         "overrides": []
       },
@@ -434,14 +434,14 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "avg by(environment) ((node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes) / node_memory_MemTotal_bytes * 100)",
+          "expr": "probe_duration_seconds{job=~\"blackbox-http-.*\"} * 1000",
           "instant": false,
-          "legendFormat": "{{environment}}",
+          "legendFormat": "{{region}} - Response Time",
           "range": true,
           "refId": "A"
         }
       ],
-      "title": "Memory Usage by Region",
+      "title": "Application Response Time (95th percentile)",
       "type": "timeseries"
     },
     {
@@ -543,7 +543,7 @@
             "uid": "prometheus"
           },
           "editorMode": "code",
-          "expr": "up{job=~\"node-exporter-.*\"}",
+          "expr": "up{job=~\"sleek-application-metrics\"}",
           "format": "table",
           "instant": true,
           "legendFormat": "__auto",
@@ -551,7 +551,7 @@
           "refId": "A"
         }
       ],
-      "title": "Instance Status Overview",
+      "title": "Application Status Overview",
       "transformations": [
         {
           "id": "organize",
